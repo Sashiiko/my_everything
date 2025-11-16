@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Моя Вселенная</title>
+    <title>My universe</title>
     
     <link
         rel="stylesheet"
@@ -119,7 +119,7 @@
     
     <div class="content-container">
         <h1 class="animate__animated animate__fadeInDown">
-            Do you know, who is my universe?
+            Do you know, who is my EVERYTHING?
         </h1>
     </div>
     
@@ -127,109 +127,117 @@
 
 
     <script>
-        const button = document.getElementById('guessButton');
-        const runThreshold = 150; // Расстояние для обнаружения курсора
-        let runCount = 0;
-        const maxRuns = 3; // Лимит убеганий
-        let isRunning = false; // Флаг, чтобы избежать многократного вызова
+    const button = document.getElementById('guessButton');
+    const runThreshold = 150; 
+    let runCount = 0;
+    const maxRuns = 3; 
 
-        // ----------------------------------------------------
-        // 1. ЛОГИКА "УБЕГАНИЯ" (ИСПРАВЛЕНА)
-        // ----------------------------------------------------
-        document.body.addEventListener('mousemove', function(e) {
-            if (runCount >= maxRuns || isRunning) {
-                return; // Не убегаем, если лимит исчерпан или анимация уже идет
-            }
-
-            const rect = button.getBoundingClientRect();
-            const buttonCenterX = rect.left + rect.width / 2;
-            const buttonCenterY = rect.top + rect.height / 2;
-            
-            const distance = Math.sqrt(
-                Math.pow(e.clientX - buttonCenterX, 2) + 
-                Math.pow(e.clientY - buttonCenterY, 2)
-            );
-
-            if (distance < runThreshold) {
-                runAway(e.clientX, e.clientY, buttonCenterX, buttonCenterY);
-            }
-        });
-
-        function runAway(mouseX, mouseY, buttonX, buttonY) {
-            isRunning = true; // Блокируем новые вызовы, пока кнопка движется
-            runCount++;
-            
-            // --- Финальное состояние (Лимит исчерпан) ---
-            if (runCount >= maxRuns) {
-                 button.style.top = '50%';
-                 button.style.left = '50%';
-                 button.style.transform = 'translate(-50%, 100px)'; // Вернуть в исходное положение
-                 button.style.boxShadow = '0 0 25px 8px rgba(255, 255, 255, 0.4)'; // Белое свечение
-                 isRunning = false; // Сбрасываем флаг, кнопка теперь готова к клику
-                 return;
-            }
-
-            // --- Убегаем на короткое расстояние ---
-            const angle = Math.atan2(mouseY - buttonY, mouseX - buttonX);
-            const moveDistance = 150; 
-
-            let newX = buttonX - moveDistance * Math.cos(angle);
-            let newY = buttonY - moveDistance * Math.sin(angle);
-            
-            // Убеждаемся, что кнопка остается в пределах экрана
-            const buttonWidth = button.offsetWidth;
-            const buttonHeight = button.offsetHeight;
-            newX = Math.max(buttonWidth / 2, Math.min(newX, window.innerWidth - buttonWidth / 2));
-            newY = Math.max(buttonHeight / 2, Math.min(newY, window.innerHeight - buttonHeight / 2));
-
-            // Применяем новые координаты
-            button.style.top = `${newY - buttonHeight / 2}px`;
-            button.style.left = `${newX - buttonWidth / 2}px`;
-            button.style.transform = 'none';
-
-            // Разблокировать вызовы после завершения движения (0.2s)
-            setTimeout(() => {
-                isRunning = false;
-            }, 200); 
+    // ----------------------------------------------------
+    // 1. ЛОГИКА "УБЕГАНИЯ"
+    // ----------------------------------------------------
+    document.body.addEventListener('mousemove', function(e) {
+        if (runCount >= maxRuns) {
+            return;
         }
 
-        // ----------------------------------------------------
-        // 2. ЛОГИКА КЛИКА
-        // ----------------------------------------------------
-        document.getElementById('guessButton').addEventListener('click', function(event) {
-            if (runCount < maxRuns) {
-                 // Если лимит не исчерпан, заставляем кнопку убежать еще раз
-                 const rect = button.getBoundingClientRect();
-                 runAway(event.clientX, event.clientY, rect.left + rect.width / 2, rect.top + rect.height / 2);
-                 return;
-            }
-            
-            // Если лимит исчерпан, выполняем финальное действие
-            createConfetti(event.clientX, event.clientY);
+        const rect = button.getBoundingClientRect();
+        const buttonCenterX = rect.left + rect.width / 2;
+        const buttonCenterY = rect.top + rect.height / 2;
+        
+        const distance = Math.sqrt(
+            Math.pow(e.clientX - buttonCenterX, 2) + 
+            Math.pow(e.clientY - buttonCenterY, 2)
+        );
+
+        if (distance < runThreshold) {
+            runAway(e.clientX, e.clientY, buttonCenterX, buttonCenterY);
+        }
+    });
+
+    function runAway(mouseX, mouseY, buttonX, buttonY) {
+        // Проверяем, не идет ли анимация, чтобы не считывать одно движение как несколько убеганий
+        const rect = button.getBoundingClientRect();
+        if (parseFloat(button.style.transitionDuration) && rect.width < 100) return; 
+
+        runCount++;
+        
+        // --- Финальное состояние (Лимит исчерпан) ---
+        if (runCount >= maxRuns) {
+             button.style.top = '50%';
+             button.style.left = '50%';
+             button.style.transform = 'translate(-50%, 100px)'; 
+             button.style.boxShadow = '0 0 25px 8px rgba(255, 255, 255, 0.4)';
+             return;
+        }
+
+        // --- Убегаем на короткое расстояние ---
+        const angle = Math.atan2(mouseY - buttonY, mouseX - buttonX);
+        const moveDistance = 150; 
+
+        let newX = buttonX - moveDistance * Math.cos(angle);
+        let newY = buttonY - moveDistance * Math.sin(angle);
+        
+        const buttonWidth = button.offsetWidth;
+        const buttonHeight = button.offsetHeight;
+        newX = Math.max(buttonWidth / 2, Math.min(newX, window.innerWidth - buttonWidth / 2));
+        newY = Math.max(buttonHeight / 2, Math.min(newY, window.innerHeight - buttonHeight / 2));
+
+        button.style.top = `${newY - buttonHeight / 2}px`;
+        button.style.left = `${newX - buttonWidth / 2}px`;
+        button.style.transform = 'none'; 
+    }
+
+    // ----------------------------------------------------
+    // 2. ЛОГИКА КЛИКА (ФИНАЛЬНО ИСПРАВЛЕНА)
+    // ----------------------------------------------------
+    document.getElementById('guessButton').addEventListener('click', function(event) {
+        if (runCount < maxRuns) {
+             const rect = button.getBoundingClientRect();
+             runAway(event.clientX, event.clientY, rect.left + rect.width / 2, rect.top + rect.height / 2);
+             return;
+        }
+        
+        // 1. Запускаем создание всех брызг сразу
+        createConfetti(event.clientX, event.clientY);
+
+        // 2. Вводим гарантированную задержку в 500 мс для отображения брызг
+        setTimeout(() => {
             window.location.href = 'second_page.html';
-        });
+        }, 500); 
+    });
 
-        // --- Код для анимации конфетти (без изменений) ---
-        function createConfetti(x, y) {
-            const numConfetti = 30; 
-            for (let i = 0; i < numConfetti; i++) {
-                const confetti = document.createElement('div');
-                confetti.className = 'confetti';
-                document.body.appendChild(confetti);
+    // --- Код для анимации конфетти (ФИНАЛЬНАЯ ВЕРСИЯ - МНОГО ЧАСТИЦ) ---
+    function createConfetti(x, y) {
+        const numConfetti = 50; 
+        
+        for (let i = 0; i < numConfetti; i++) {
+            const confetti = document.createElement('div');
+            confetti.className = 'confetti';
+            document.body.appendChild(confetti);
 
-                const endX = (Math.random() - 0.5) * 500; 
-                const endY = (Math.random() - 0.5) * 500; 
-                
-                confetti.style.left = `${x}px`;
-                confetti.style.top = `${y}px`;
-                confetti.style.setProperty('--x', `${endX}px`);
-                confetti.style.setProperty('--y', `${endY}px`);
+            // Случайный размер (уже настроен в CSS, но задаем здесь для разнообразия)
+            const size = Math.random() * 6 + 2; 
+            confetti.style.width = `${size}px`;
+            confetti.style.height = `${size}px`;
 
-                confetti.addEventListener('animationend', () => {
-                    confetti.remove();
-                });
-            }
+            // Увеличенный разброс и смещение вверх для эффекта "взрыва"
+            const endX = (Math.random() - 0.5) * 800; // Шире
+            const endY = (Math.random() - 0.5) * 800 + 400; // Смещение вниз
+            
+            confetti.style.left = `${x}px`;
+            confetti.style.top = `${y}px`;
+            confetti.style.setProperty('--x', `${endX}px`);
+            confetti.style.setProperty('--y', `${endY}px`);
+
+            // Добавляем случайную длительность для асинхронного падения
+            const duration = Math.random() * 1.5 + 1.5; // 1.5с до 3.0с
+            confetti.style.animationDuration = `${duration}s`;
+
+            confetti.addEventListener('animationend', () => {
+                confetti.remove();
+            });
         }
-    </script>
+    }
+</script>
 </body>
 </html>
