@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Моя Вселенная - Ответ</title>
+    
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
+    />
+    
+    <script src="https://unpkg.com/@lottiefiles/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <style>
+        /* Общие стили */
+        body {
+            margin: 0;
+            overflow: hidden; 
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+
+        /* ОБНОВЛЕННЫЙ ФОН: Фиолетово-пурпурный градиент в стиле index.html */
+        .galaxy-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, #231653 0%, #3C2267 100%); 
+            z-index: -1; 
+            overflow: hidden; 
+        }
+
+        /* Контейнер для мерцающих звезд (оставляем, так как JS его генерирует) */
+        .stars {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Генерация звезд с помощью box-shadow */
+        .star {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 1px;
+            height: 1px;
+            background: transparent;
+            animation: twinkleStars 2s infinite alternate ease-in-out;
+        }
+
+        @keyframes twinkleStars {
+            0% { opacity: 0.5; }
+            50% { opacity: 1; }
+            100% { opacity: 0.5; }
+        }
+        
+        h1 {
+            font-size: 3em;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.9);
+            z-index: 25; 
+            --animate-duration: 2s; 
+            animation-delay: 0.5s; 
+            
+            /* Позиционирование: выше центра */
+            position: absolute; 
+            top: 60%; 
+            left: 23%;
+            transform: translate(-50%, -50%); 
+            
+            width: 90%; 
+            max-width: 800px; 
+        }
+
+        /* Стиль для слова Ahmi */
+        .pink-text {
+            color: #ff69b4; 
+        }
+
+        .lottie-container {
+            position: absolute; 
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Стили для всех встраиваемых окон (iframe) */
+        iframe {
+            position: absolute;
+            border: none;
+            pointer-events: none;
+        }
+
+        /* 1. Сердца (iframe - ФОН) */
+        #hearts-iframe-bg {
+            width: 100%; 
+            height: 100%;
+            top: 0;
+            left: 0;
+            opacity: 0.4; 
+            z-index: 5;
+        }
+
+        /* 2. Сердце с трейлом (iframe - НОВАЯ АНИМАЦИЯ, ЦЕНТР / ПОЛНАЯ ШИРИНА) */
+        #heart-trail-iframe {
+            width: 100%; 
+            height: 100%; 
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%); 
+            opacity: 0.8;
+            z-index: 15;
+            object-fit: contain; 
+        }
+
+        /* 3. Кошачий поцелуй (lottie-player - ГЛАВНЫЙ ЭЛЕМЕНТ В ЦЕНТРЕ) */
+        #cat-kiss-animation {
+            position: absolute;
+            width: 100%; 
+            height: 100%; 
+            top: 0;
+            left: 0;
+            z-index: 10; 
+            object-fit: contain; 
+        }
+    </style>
+</head>
+<body>
+    <div class="galaxy-background">
+        <div class="stars"></div>
+    </div> 
+
+    <h1 class="animate__animated animate__tada">
+        YOU, <span class="pink-text">Ahmi</span>, are mere jaan!
+    </h1>
+
+    <div class="lottie-container">
+        
+        <iframe
+            id="hearts-iframe-bg"
+            src="https://lottie.host/embed/8ce8b696-4e94-43a7-9540-2b184951ccbd/CoIDgcVu6c.lottie"
+            allowfullscreen
+            allow="autoplay"
+        ></iframe>
+
+        <iframe
+            id="heart-trail-iframe"
+            src="https://lottie.host/embed/7aea82dd-2947-4145-8c2a-9e18b54c3524/K8AcyaaOW4.lottie"
+            allowfullscreen
+            allow="autoplay"
+        ></iframe>
+
+        <lottie-player
+            id="cat-kiss-animation"
+            src="https://assets5.lottiefiles.com/packages/lf20_tlgp6j3x.json"
+            background="transparent"
+            speed="1"
+            loop
+            autoplay
+        ></lottie-player>
+    </div>
+
+    <script>
+        // Функция для динамической генерации звезд (оставляем, чтобы JS не ломался)
+        function generateStars() {
+            const starsContainer = document.querySelector('.stars');
+            starsContainer.innerHTML = ''; 
+            
+            const numStars = 200; 
+            let starShadows = '';
+
+            for (let i = 0; i < numStars; i++) {
+                const x = Math.random() * window.innerWidth;
+                const y = Math.random() * window.innerHeight;
+                const opacity = Math.random() * 0.7 + 0.3; 
+                starShadows += `${x}px ${y}px 0 1px rgba(255, 255, 255, ${opacity})${i === numStars - 1 ? '' : ','}`;
+            }
+            
+            const starElement = document.createElement('div');
+            starElement.className = 'star';
+            starElement.style.boxShadow = starShadows;
+            starsContainer.appendChild(starElement);
+        }
+        
+        generateStars(); 
+        window.addEventListener('resize', generateStars); 
+    </script>
+</body>
+</html>
